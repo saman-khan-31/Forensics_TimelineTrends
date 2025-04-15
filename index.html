@@ -1,67 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Simultaneous Animations</title>
     <style>
-        .container {
-            display: flex;
-            flex-wrap: wrap; /* Ensures responsiveness on smaller screens */
-            height: 600px; /* Increase container height */
-        }
-        .left-chart {
-            flex: 0 0 75%; /* Takes 75% width */
-            box-sizing: border-box;
-            padding: 10px; /* Optional spacing */
-        }
-        .right-chart {
-            flex: 0 0 25%; /* Takes 25% width */
-            box-sizing: border-box;
-            padding: 10px; /* Optional spacing */
-        }
-        .flourish-embed {
-            width: 100%; /* Ensures charts scale with their containers */
-            height: 100%; /* Set height to fill their containers */
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .language-toggle {
+        text-align: right;
+        padding: 10px 20px;
+      }
+
+      .language-toggle div {
+        display: inline-flex;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .language-toggle button {
+        padding: 8px 16px;
+        border: none;
+        cursor: pointer;
+        background-color: #eee;
+        color: black;
+        user-select: none;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .language-toggle button.active {
+        background-color: #018657;
+        color: white;
+      }
+
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        height: 600px;
+      }
+
+      .left-chart {
+        flex: 0 0 75%;
+        box-sizing: border-box;
+        padding: 10px;
+      }
+
+      .right-chart {
+        flex: 0 0 25%;
+        box-sizing: border-box;
+        padding: 10px;
+      }
+
+      .flourish-embed {
+        width: 100%;
+        height: 100%;
+      }
     </style>
-</head>
-<body>
+  </head>
+
+  <body>
+    <div class="language-toggle">
+      <div>
+        <button id="en-btn" class="active" onclick="setLanguage('en')">
+          English
+        </button>
+        <button id="ar-btn" onclick="setLanguage('ar')">العربية</button>
+      </div>
+    </div>
+
+    <p
+      id="summary-text"
+      style="
+        text-align: justify;
+        font-size: 16px;
+        background-color: white;
+        padding: 10px;
+      "
+    >
+      <b>Summary Report:</b> The data highlights key hotspots including
+      Burjuman, Palm Jumeirah, Garhoud, Deira, and City Walk, which consistently
+      show high activity levels for various drugs. Cocaine is the most
+      frequently reported drug, dominating areas such as Downtown Dubai and
+      Dubai Marina, while Heroin is more prevalent in Palm Jumeirah, Jumeirah
+      Beach, and Mirdif. There is heightened activity during June through
+      August, suggesting seasonal trends. A notable rise in Methamphetamine
+      cases indicates a shift in the types of drugs being trafficked or
+      consumed.
+    </p>
+
+    <h3
+      id="map-title"
+      style="margin-left: 300px; font-size: 22px; font-weight: bold"
+    >
+      Timeline & Locations of Samples Found
+    </h3>
+
     <div class="container">
-        <p style="text-align: justify; font-size: 15px; font-family: Arial; background-color: white; padding: 10px;">
-            <b>Summary Report:</b> The data highlights key hotspots including Burjuman, Palm Jumeirah, Garhoud, Deira, and City Walk, which consistently show high activity levels for various drugs. Cocaine is the most frequently reported drug, dominating areas such as Downtown Dubai and Dubai Marina, while Heroin is more prevalent in Palm Jumeirah, Jumeirah Beach, and Mirdif. There is heightened activity during June through August, suggesting seasonal trends. A notable rise in Methamphetamine cases indicates a shift in the types of drugs being trafficked or consumed.
-        </p>
-        
-        <div class="left-chart">
-            <div id="visualization1" class="flourish-embed flourish-map" data-src="visualisation/21183195">
-                <noscript>
-                    <img src="https://public.flourish.studio/visualisation/21183195/thumbnail" width="100%" alt="map visualization" />
-                </noscript>
-            </div>
-        </div>
-        <div class="right-chart">
-            <div id="visualization2" class="flourish-embed flourish-chart" data-src="visualisation/21184040">
-                <noscript>
-                    <img src="https://public.flourish.studio/visualisation/21184040/thumbnail" width="100%" alt="chart visualization" />
-                </noscript>
-            </div>
-        </div>
+      <div class="left-chart">
+        <div
+          id="visualization1"
+          class="flourish-embed flourish-map"
+          data-src="visualisation/21183195"
+          data-center="[25.276987, 55.296249]"
+          data-zoom="10"
+        ></div>
+      </div>
+
+      <div class="right-chart">
+        <h3
+          id="chart-title"
+          style="text-align: center; font-size: 22px; font-weight: bold"
+        >
+          Frequency of Drugs
+        </h3>
+        <div
+          id="visualization2"
+          class="flourish-embed flourish-chart"
+          data-src="visualisation/21184040"
+          data-autoplay="true"
+        ></div>
+      </div>
     </div>
 
     <script>
-        // Function to load Flourish scripts simultaneously
-        function loadFlourishVisualizations() {
-            const script1 = document.createElement('script');
-            script1.src = "https://public.flourish.studio/resources/embed.js";
-            document.getElementById('visualization1').appendChild(script1);
+      const translations = {
+        en: {
+          summary:
+            "<b>Summary Report:</b> The data highlights key hotspots including Burjuman, Palm Jumeirah, Garhoud, Deira, and City Walk, which consistently show high activity levels for various drugs. Cocaine is the most frequently reported drug, dominating areas such as Downtown Dubai and Dubai Marina, while Heroin is more prevalent in Palm Jumeirah, Jumeirah Beach, and Mirdif. There is heightened activity during June through August, suggesting seasonal trends. A notable rise in Methamphetamine cases indicates a shift in the types of drugs being trafficked or consumed.",
+          mapTitle: "Timeline & Locations of Samples Found",
+          chartTitle: "Frequency of Drugs",
+        },
+        ar: {
+          summary:
+            "<b>تقرير ملخص:</b> تسلط البيانات الضوء على المناطق الرئيسية مثل برجمان، نخلة جميرا، القرهود، ديرة وسيتي ووك، التي تظهر مستويات عالية من النشاط المتعلق بأنواع مختلفة من المخدرات. يعد الكوكايين الأكثر انتشارًا، خاصة في وسط دبي ودبي مارينا، بينما ينتشر الهيروين أكثر في نخلة جميرا، شاطئ جميرا ومردف. ويلاحظ نشاط متزايد خلال شهور يونيو حتى أغسطس، مما يشير إلى اتجاهات موسمية. كما لوحظ ارتفاع في حالات الميثامفيتامين مما يدل على تغير في أنواع المخدرات المتداولة أو المستهلكة.",
+          mapTitle: "الجدول الزمني ومواقع العثور على العينات",
+          chartTitle: "تكرار أنواع المخدرات",
+        },
+      };
 
-            const script2 = document.createElement('script');
-            script2.src = "https://public.flourish.studio/resources/embed.js";
-            document.getElementById('visualization2').appendChild(script2);
-        }
+      window.onload = () => {
+        loadFlourishVisualizations();
 
-        // Trigger the loading function on window load
-        window.onload = loadFlourishVisualizations;
+        setTimeout(() => {
+          const iframe = document.querySelector(
+            "#visualization1 iframe"
+          )?.contentWindow;
+
+          if (iframe) {
+            iframe.postMessage(
+              {
+                method: "setView",
+                center: [25.276987, 55.296249],
+                zoom: 10,
+              },
+              "*"
+            );
+          }
+        }, 3000); // Wait for Flourish to load
+      };
+
+      let currentLang = "en";
+
+      function setLanguage(lang) {
+        currentLang = lang;
+
+        document.getElementById("summary-text").innerHTML =
+          translations[lang].summary;
+        document.getElementById("map-title").textContent =
+          translations[lang].mapTitle;
+        document.getElementById("chart-title").textContent =
+          translations[lang].chartTitle;
+
+        document
+          .getElementById("en-btn")
+          .classList.toggle("active", lang === "en");
+        document
+          .getElementById("ar-btn")
+          .classList.toggle("active", lang === "ar");
+      }
+
+      function loadFlourishVisualizations() {
+        const script = document.createElement("script");
+        script.src = "https://public.flourish.studio/resources/embed.js";
+        document.body.appendChild(script);
+      }
+
+      window.onload = () => {
+        loadFlourishVisualizations();
+      };
     </script>
-</body>
+  </body>
 </html>
